@@ -1,60 +1,51 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
+
+export const RESORT_STATUS = ["PENDING", "APPROVED", "REJECTED", "SUSPENDED"] as const;
+export type ResortStatus = (typeof RESORT_STATUS)[number];
 
 export interface IResort extends Document {
+  owner: Types.ObjectId;
   name: string;
   description: string;
-  location: string;
-  pricePerNight: number;
-  images: string[];
+  address: string;
+  city: string;
+  location: { type: "Point"; coordinates: [number, number] }; // [lng, lat]
+  images: { url: string; publicId: string }[];
   amenities: string[];
   rating: number;
-  isAvailable: boolean;
+  reviewCount: number;
+  status: ResortStatus;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const resortSchema = new Schema<IResort>(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
+    owner: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    name: { type: String, required: true, trim: true },
+    description: { type: String, required: true, trim: true },
+    address: { type: String, required: true, trim: true },
+    city: { type: String, required: true, trim: true, index: true },
     location: {
-      type: String,
-      required: true,
+      type: { type: String, enum: ["Point"], default: "Point" },
+      coordinates: { type: [Number], required: true }, // [lng, lat]
     },
-    pricePerNight: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    images: {
-      type: [String],
-      default: [],
-    },
-    amenities: {
-      type: [String],
-      default: [],
-    },
-    rating: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 5,
-    },
-    isAvailable: {
-      type: Boolean,
-      default: true,
-    },
+    images: [
+      {
+        url: { type: String, required: true },
+        publicId: { type: String, required: true },
+        _id: false,
+      },
+    ],
+    amenities: { type: [String], default: [] },
+    rating: { type: Number, default: 0, min: 0, max: 5 },
+    reviewCount: { type: Number, default: 0, min: 0 },
+    status: { type: String, enum: RESORT_STATUS, default: "PENDING", index: true },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const Resort = mongoose.model<IResort>("Resort", resortSchema);
+resortSchema.index({ location: "2dsphere" });
 
+const Resort = mongoose.model<IResort>("Resort", resortSchema);
 export default Resort;
