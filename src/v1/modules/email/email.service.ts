@@ -1,30 +1,30 @@
-import { getTransporter, getEmailFrom, isEmailConfigured, getEmailUser } from "../../config/email.config";
+import { getTransporter, getEmailFrom, isEmailConfigured, getEmailUser } from "../../../config/email.config";
 
 /**
  * Sends a 6-digit OTP verification email for account registration.
  */
 export const sendOtpEmail = async (
-    to: string,
-    otp: string,
-    recipientName: string = "Traveler"
+  to: string,
+  otp: string,
+  recipientName: string = "Traveler"
 ): Promise<{ success: boolean; messageId?: string }> => {
-    // If credentials are not configured, print OTP to console for development ease
-    if (!isEmailConfigured()) {
-        console.log(`\n======================================================`);
-        console.log(`📧 [DEV EMAIL SIMULATOR] Registration OTP`);
-        console.log(`To: ${to} (${recipientName})`);
-        console.log(`Your 6-Digit OTP: ${otp}`);
-        console.log(`Expires in: 10 minutes`);
-        console.log(`⚠️ EMAIL_USER or EMAIL_PASS not set in .env.`);
-        console.log(`Please enter your Gmail and App Password in .env to send real emails.`);
-        console.log(`======================================================\n`);
-        return { success: true, messageId: "dev-simulated-id" };
-    }
+  // If credentials are not configured, print OTP to console for development ease
+  if (!isEmailConfigured()) {
+    console.log(`\n======================================================`);
+    console.log(`📧 [DEV EMAIL SIMULATOR] Registration OTP`);
+    console.log(`To: ${to} (${recipientName})`);
+    console.log(`Your 6-Digit OTP: ${otp}`);
+    console.log(`Expires in: 10 minutes`);
+    console.log(`⚠️ EMAIL_USER or EMAIL_PASS not set in .env.`);
+    console.log(`Please enter your Gmail and App Password in .env to send real emails.`);
+    console.log(`======================================================\n`);
+    return { success: true, messageId: "dev-simulated-id" };
+  }
 
-    const transporter = getTransporter();
-    const from = getEmailFrom();
+  const transporter = getTransporter();
+  const from = getEmailFrom();
 
-    const htmlContent = `
+  const htmlContent = `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -150,22 +150,22 @@ export const sendOtpEmail = async (
     </html>
     `;
 
-    try {
-        const info = await transporter.sendMail({
-            from,
-            to,
-            subject: `Your StayUp Stays Verification Code: ${otp}`,
-            text: `Hello ${recipientName},\n\nYour StayUp Stays verification code is: ${otp}\n\nThis code will expire in 10 minutes.\n\nThank you for choosing StayUp Stays!`,
-            html: htmlContent,
-        });
+  try {
+    const info = await transporter.sendMail({
+      from,
+      to,
+      subject: `Your StayUp Stays Verification Code: ${otp}`,
+      text: `Hello ${recipientName},\n\nYour StayUp Stays verification code is: ${otp}\n\nThis code will expire in 10 minutes.\n\nThank you for choosing StayUp Stays!`,
+      html: htmlContent,
+    });
 
-        console.log(`[EmailService] Verification OTP successfully sent to ${to}. (Message ID: ${info.messageId})`);
-        return { success: true, messageId: info.messageId };
-    } catch (error: any) {
-        console.error(`\n❌ [EmailService] Failed to send email via Gmail (${getEmailUser()}):`, error.message);
-        console.log(`📧 [FALLBACK OTP FOR TESTING]: ${otp} for ${to}\n`);
-        throw new Error(
-            `Email sending failed: ${error.message || "Please check EMAIL_USER and EMAIL_PASS App Password"}`
-        );
-    }
+    console.log(`[EmailService] Verification OTP successfully sent to ${to}. (Message ID: ${info.messageId})`);
+    return { success: true, messageId: info.messageId };
+  } catch (error: any) {
+    console.error(`\n❌ [EmailService] Failed to send email via Gmail (${getEmailUser()}):`, error.message);
+    console.log(`📧 [FALLBACK OTP FOR TESTING]: ${otp} for ${to}\n`);
+    throw new Error(
+      `Email sending failed: ${error.message || "Please check EMAIL_USER and EMAIL_PASS App Password"}`
+    );
+  }
 };

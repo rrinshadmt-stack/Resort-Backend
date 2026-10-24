@@ -6,7 +6,7 @@ import {
     verifyOtpService,
     resendOtpService,
 } from "./auth.service";
-import { AppError } from "../../utils/errors";
+import { AppError } from "../../../utils/errors";
 import type {
     RegisterInput,
     LoginInput,

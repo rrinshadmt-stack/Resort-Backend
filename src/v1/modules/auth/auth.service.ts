@@ -1,14 +1,14 @@
 
-import { User } from "../../models/user.model";
-import { RefreshToken } from "../../models/refresh-token.model";
-import { hashPassword, comparePassword } from "../../utils/password";
+import { User } from "../../../models/user.model";
+import { RefreshToken } from "../../../models/refresh-token.model";
+import { hashPassword, comparePassword } from "../../../utils/password";
 import {
     generateAccessToken,
     generateRefreshToken,
     hashToken,
     calculateRefreshTokenExpiryDate,
-} from "../../utils/jwt";
-import { AppError } from "../../utils/errors";
+} from "../../../utils/jwt";
+import { AppError } from "../../../utils/errors";
 import { sendOtpEmail } from "../email/email.service";
 import type {
     RegisterInput,
