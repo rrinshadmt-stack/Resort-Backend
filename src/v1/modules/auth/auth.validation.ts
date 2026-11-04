@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-
 export const registerSchema = z.object({
     name: z
         .string({ message: "Name is required" })
@@ -23,14 +22,12 @@ export const registerSchema = z.object({
         .optional()
         .nullable(),
     role: z
-        .enum(["CUSTOMER", "OWNER"])
+        .enum(["user", "property_owner"])
         .optional()
-        .default("CUSTOMER"),
-
+        .default("user"),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;
-
 
 export const verifyOtpSchema = z.object({
     email: z

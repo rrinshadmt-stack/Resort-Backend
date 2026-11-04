@@ -1,6 +1,7 @@
 import { Schema, model, type InferSchemaType } from "mongoose";
 
-export const USER_ROLES = ["CUSTOMER", "OWNER", "ADMIN"] as const;
+export const USER_ROLES = ["user", "property_owner", "admin"] as const;
+
 export type UserRole = (typeof USER_ROLES)[number];
 
 const userSchema = new Schema(
@@ -28,9 +29,17 @@ const userSchema = new Schema(
         role: {
             type: String,
             enum: USER_ROLES,
-            default: "CUSTOMER",
+            default: "user",
         },
         isVerified: {
+            type: Boolean,
+            default: false,
+        },
+        isPhoneVerified: {
+            type: Boolean,
+            default: false,
+        },
+        isBlock: {
             type: Boolean,
             default: false,
         },
@@ -43,9 +52,10 @@ const userSchema = new Schema(
             default: null,
         },
     },
-    { timestamps: true },
+    { timestamps: true }
 );
 
 export type UserDoc = InferSchemaType<typeof userSchema>;
 
 export const User = model("User", userSchema);
+export default User;

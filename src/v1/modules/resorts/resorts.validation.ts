@@ -18,6 +18,7 @@ const lng = z.coerce.number().min(-180, "Invalid longitude").max(180, "Invalid l
 
 export const createResortSchema = z.object({
     name: z.string({ message: "Name is required" }).trim().min(2).max(100),
+    propertyType: z.enum(["resort", "villa", "apartment", "building"]).optional().default("resort"),
     description: z
         .string({ message: "Description is required" })
         .trim()

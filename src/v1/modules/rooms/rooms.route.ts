@@ -22,7 +22,7 @@ router.get("/rooms/:id", getRoom);
 router.post(
     "/resorts/:resortId/rooms",
     authenticate,
-    authorize("OWNER", "ADMIN"),
+    authorize("property_owner", "admin"),
     upload.array("images", 5),
     validate(createRoomSchema),
     createRoomHandler
@@ -31,7 +31,7 @@ router.post(
 router.put(
     "/rooms/:id",
     authenticate,
-    authorize("OWNER", "ADMIN"),
+    authorize("property_owner", "admin"),
     upload.array("images", 5),
     validate(updateRoomSchema),
     updateRoomHandler
@@ -40,7 +40,7 @@ router.put(
 router.delete(
     "/rooms/:id",
     authenticate,
-    authorize("OWNER", "ADMIN"),
+    authorize("property_owner", "admin"),
     deleteRoomHandler
 );
 

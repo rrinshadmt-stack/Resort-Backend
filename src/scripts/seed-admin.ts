@@ -22,7 +22,7 @@ const run = async (): Promise<void> => {
     await User.findOneAndUpdate(
         { email },
         {
-            $set: { name, passwordHash, role: "ADMIN", isVerified: true },
+            $set: { name, passwordHash, role: "admin", isVerified: true },
             $setOnInsert: { email },
         },
         { upsert: true, new: true }
