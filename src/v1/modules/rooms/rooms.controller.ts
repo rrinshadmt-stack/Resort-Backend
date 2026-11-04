@@ -31,7 +31,7 @@ const assertCanManage = async (
     if (!resort) throw new AppError("Resort not found", 404);
 
     const allowed =
-        user?.role === "ADMIN" || resort.owner.toString() === user?.id;
+        user?.role === "admin" || resort.owner.toString() === user?.id;
     if (!allowed) throw new AppError("You do not own this resort", 403);
 };
 

@@ -3,6 +3,7 @@ import { authenticate } from "../../../middleware/auth.middleware";
 import { authorize } from "../../../middleware/role.middleware";
 import { upload } from "../../../middleware/upload.middleware";
 import { validate } from "../../../middleware/validate";
+import { requireApprovedVerification } from "../../../middleware/verification.middleware";
 import {
   createResortSchema,
   updateResortSchema,
@@ -25,16 +26,18 @@ const router = Router();
 router.get("/", getResorts);
 
 // Static paths must come before "/:id"
-router.get("/mine", authenticate, authorize("OWNER"), getMyResorts);
-router.get("/admin/all", authenticate, authorize("ADMIN"), adminGetResorts);
+router.get("/mine", authenticate, authorize("property_owner"), getMyResorts);
+router.get("/admin/all", authenticate, authorize("admin"), adminGetResorts);
 
 router.get("/:id", getResort);
 
 // multer must run before validate so multipart fields are parsed into req.body
+// Property Owner must have all three verification stages approved to publish properties
 router.post(
   "/",
   authenticate,
-  authorize("OWNER"),
+  authorize("property_owner"),
+  requireApprovedVerification,
   upload.array("images", 5),
   validate(createResortSchema),
   createResortHandler
@@ -43,7 +46,7 @@ router.post(
 router.put(
   "/:id",
   authenticate,
-  authorize("OWNER", "ADMIN"),
+  authorize("property_owner", "admin"),
   upload.array("images", 5),
   validate(updateResortSchema),
   updateResortHandler
@@ -52,11 +55,11 @@ router.put(
 router.patch(
   "/:id/status",
   authenticate,
-  authorize("ADMIN"),
+  authorize("admin"),
   validate(updateStatusSchema),
   updateStatusHandler
 );
 
-router.delete("/:id", authenticate, authorize("OWNER", "ADMIN"), deleteResortHandler);
+router.delete("/:id", authenticate, authorize("property_owner", "admin"), deleteResortHandler);
 
 export default router;

@@ -3,9 +3,13 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 export const RESORT_STATUS = ["PENDING", "APPROVED", "REJECTED", "SUSPENDED"] as const;
 export type ResortStatus = (typeof RESORT_STATUS)[number];
 
+export const PROPERTY_TYPES = ["resort", "villa", "apartment", "building"] as const;
+export type PropertyType = (typeof PROPERTY_TYPES)[number];
+
 export interface IResort extends Document {
   owner: Types.ObjectId;
   name: string;
+  propertyType: PropertyType;
   description: string;
   address: string;
   city: string;
@@ -23,6 +27,11 @@ const resortSchema = new Schema<IResort>(
   {
     owner: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     name: { type: String, required: true, trim: true },
+    propertyType: {
+      type: String,
+      enum: PROPERTY_TYPES,
+      default: "resort",
+    },
     description: { type: String, required: true, trim: true },
     address: { type: String, required: true, trim: true },
     city: { type: String, required: true, trim: true, index: true },
@@ -48,4 +57,8 @@ const resortSchema = new Schema<IResort>(
 resortSchema.index({ location: "2dsphere" });
 
 const Resort = mongoose.model<IResort>("Resort", resortSchema);
+
+// Backward compatibility & Property alias
+export const Property = Resort;
+export type IProperty = IResort;
 export default Resort;

@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./v1/modules/auth/auth.route";
 import resortRoutes from "./v1/modules/resorts/resorts.routes";
 import roomRoutes from "./v1/modules/rooms/rooms.route";
+import ownerRoutes from "./v1/modules/owner/owner.routes";
+import adminRoutes from "./v1/modules/admin/admin.routes";
 import { notFoundMiddleware } from "./middleware/notFound.middleware";
 import { errorMiddleware } from "./middleware/error.middleware";
 
@@ -23,13 +25,16 @@ app.use(
 app.get("/api/health", (_req: Request, res: Response) => {
     res.status(200).json({
         success: true,
-        message: "Resort Booking API is running",
+        message: "StayUp Resort & Property API is running",
     });
 });
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/resorts", resortRoutes);
+app.use("/api/v1/properties", resortRoutes);
 app.use("/api/v1", roomRoutes); // /resorts/:resortId/rooms and /rooms/:id
+app.use("/api/v1/owner", ownerRoutes);
+app.use("/api/v1/admin", adminRoutes);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);

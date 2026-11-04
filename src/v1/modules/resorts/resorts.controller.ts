@@ -128,7 +128,7 @@ export const updateResortHandler = async (req: Request, res: Response, next: Nex
     const resort = await getResortById(id);
     if (!resort) throw new AppError("Resort not found", 404);
 
-    if (req.user!.role !== "ADMIN" && resort.owner.toString() !== req.user!.id) {
+    if (req.user!.role !== "admin" && resort.owner.toString() !== req.user!.id) {
       throw new AppError("You do not own this resort", 403);
     }
 
@@ -171,7 +171,7 @@ export const deleteResortHandler = async (req: Request, res: Response, next: Nex
     const resort = await getResortById(id);
     if (!resort) throw new AppError("Resort not found", 404);
 
-    if (req.user!.role !== "ADMIN" && resort.owner.toString() !== req.user!.id) {
+    if (req.user!.role !== "admin" && resort.owner.toString() !== req.user!.id) {
       throw new AppError("You do not own this resort", 403);
     }
 

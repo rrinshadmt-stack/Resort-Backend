@@ -77,7 +77,7 @@ export const registerUser = async (input: RegisterInput): Promise<RegisterInitRe
         existingUser.name = input.name.trim();
         existingUser.passwordHash = passwordHash;
         existingUser.phone = input.phone?.trim() || null;
-        existingUser.role = input.role || "CUSTOMER";
+        existingUser.role = input.role === "property_owner" ? "property_owner" : "user";
         existingUser.otpCode = otp;
         existingUser.otpExpiresAt = otpExpiresAt;
         await existingUser.save();
@@ -102,7 +102,7 @@ export const registerUser = async (input: RegisterInput): Promise<RegisterInitRe
 
     // Assign the user's role
     const assignedRole =
-        input.role === "OWNER" ? "OWNER" : "CUSTOMER";
+        input.role === "property_owner" ? "property_owner" : "user";
 
     // Create an unverified user
     const newUser = await User.create({
